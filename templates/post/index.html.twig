@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lista postów{% endblock %}
+
+{% block body %}
+    <h1>Lista postów</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="flash-success">{{ message }}</div>
+    {% endfor %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tytuł</th>
+                <th>Autor</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in posts %}
+                <tr>
+                    <td>{{ post.id }}</td>
+                    <td>{{ post.title }}</td>
+                    <td>{{ post.user.name }}</td>
+                    <td>
+                        <form method="post" action="{{ path('post_delete', {id: post.id}) }}" onsubmit="return confirm('Czy na pewno chcesz usunąć ten post?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button class="btn btn-danger">Usuń</button>
+                        </form>
+
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">Brak postów w bazie.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
